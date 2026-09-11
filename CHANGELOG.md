@@ -16,6 +16,8 @@ here. Dates use ISO 8601.
 - A public-safe GitHub inquiry form and GitHub Pages deployment workflow.
 - Structured issue forms for commercial inquiries, reproducible result
   submissions, and sanitized bug reports.
+- Self-reported source attribution on commercial inquiries so channel quality
+  can be measured without adding third-party tracking scripts.
 - A 1200 x 630 social preview image, canonical metadata, robots policy, and
   sitemap for public discovery.
 

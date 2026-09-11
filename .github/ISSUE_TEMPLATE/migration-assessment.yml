@@ -22,6 +22,22 @@ body:
       required: true
 
   - type: dropdown
+    id: source
+    attributes:
+      label: 从哪里了解到 V41 FlashLab
+      options:
+        - Hugging Face 模型讨论
+        - GitHub 搜索或推荐
+        - 掘金
+        - V2EX
+        - X / Twitter
+        - LinkedIn
+        - 同行或客户推荐
+        - 其他
+    validations:
+      required: true
+
+  - type: dropdown
     id: baseline
     attributes:
       label: 当前基线
