@@ -1,0 +1,83 @@
+{
+  "schema_version": "v41-flashlab.suite.v1",
+  "version": "1.0.0",
+  "name": "v41-flashlab-smoke",
+  "metadata": {
+    "category": "release-smoke",
+    "language": "en",
+    "provenance": "synthetic",
+    "license": "MIT",
+    "version": "1.0.0"
+  },
+  "defaults": {
+    "temperature": 0,
+    "max_tokens": 128
+  },
+  "cases": [
+    {
+      "id": "arithmetic-exact",
+      "metadata": {"track": "reasoning", "difficulty": "smoke"},
+      "messages": [
+        {
+          "role": "user",
+          "content": "Return only the integer result of 17 * 19."
+        }
+      ],
+      "expect": {
+        "type": "exact",
+        "value": "323"
+      }
+    },
+    {
+      "id": "instruction-contains",
+      "metadata": {"track": "instruction", "difficulty": "smoke"},
+      "messages": [
+        {
+          "role": "user",
+          "content": "In one short sentence, name Python's two boolean values."
+        }
+      ],
+      "expect": {
+        "type": "contains",
+        "value": ["True", "False"],
+        "mode": "all"
+      }
+    },
+    {
+      "id": "structured-output",
+      "metadata": {"track": "structured-output", "difficulty": "smoke"},
+      "messages": [
+        {
+          "role": "system",
+          "content": "Return valid JSON only."
+        },
+        {
+          "role": "user",
+          "content": "Represent water with keys name and formula."
+        }
+      ],
+      "parameters": {
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "expect": {
+        "type": "json_schema",
+        "schema": {
+          "type": "object",
+          "required": ["name", "formula"],
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "formula": {
+              "const": "H2O"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
+  ]
+}

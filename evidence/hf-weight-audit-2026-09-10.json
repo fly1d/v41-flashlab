@@ -1,0 +1,36 @@
+{
+  "schema_version": "v41-flashlab.weight-audit.v1",
+  "captured_at": "2026-09-10T14:35:00+08:00",
+  "repository": "deepseek-ai/DeepSeek-V4.1-Flash",
+  "revision": "2bc89ac599031fa673cab993f1df02fc4a98c673",
+  "shards": 48,
+  "tensors": 96085,
+  "index_total_bytes": 510286023000,
+  "index_total_gb": 510.286,
+  "index_total_gib": 475.241,
+  "physical_elements_by_dtype": {
+    "BF16": 1976441856,
+    "F32": 42307282,
+    "F8_E4M3": 204015223296,
+    "F8_E8M0": 23563015184,
+    "I8": 278585671680
+  },
+  "physical_elements_total": 508182659298,
+  "quantization_scale_elements_excluded": 23563015184,
+  "logical_parameters_by_component": {
+    "backbone": 552051448944,
+    "dspark": 14225362530,
+    "engram": 196928504320
+  },
+  "logical_parameters_total": 763205315794,
+  "assumptions": [
+    "Tensor names ending in .scale are quantization metadata, not model parameters.",
+    "Each I8 tensor element stores two logical FP4 expert parameters, per repository config and conversion code.",
+    "Components with prefix mtp. are reported as DSpark; tensors containing .engram. as Engram."
+  ],
+  "sources": [
+    "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/2bc89ac599031fa673cab993f1df02fc4a98c673/model.safetensors.index.json",
+    "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/2bc89ac599031fa673cab993f1df02fc4a98c673/inference/convert.py",
+    "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/2bc89ac599031fa673cab993f1df02fc4a98c673/config.json"
+  ]
+}

@@ -1,0 +1,63 @@
+name: 模型迁移体检咨询
+description: 用公开、非敏感信息确认是否适合开展 V4.1-Flash 迁移评估
+title: "[迁移体检] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        此咨询单会公开显示。请勿填写 API 密钥、客户原文、个人联系方式、未公开代码或其他敏感信息。这里只做范围判断，样本与商务条款另行确认。
+
+  - type: dropdown
+    id: service
+    attributes:
+      label: 意向方案
+      options:
+        - 模型迁移体检（标准范围服务费 ¥9,800）
+        - 企业迁移试点（¥39,800 起）
+        - 持续回归监控（¥6,800 / 月起）
+        - 先使用公开评测基线
+    validations:
+      required: true
+
+  - type: dropdown
+    id: baseline
+    attributes:
+      label: 当前基线
+      options:
+        - DeepSeek 既有模型
+        - OpenAI 模型
+        - Claude
+        - Qwen
+        - Llama / 自托管开源模型
+        - 其他 / 多模型路由
+        - 尚未使用模型
+    validations:
+      required: true
+
+  - type: textarea
+    id: workload
+    attributes:
+      label: 任务类型与决策问题
+      description: 只写抽象任务类型，例如客服问答、结构化抽取或代码审查，不要粘贴真实样本。
+      placeholder: 我们希望判断哪些任务适合迁移、哪些任务应保留当前模型……
+    validations:
+      required: true
+
+  - type: input
+    id: decision-date
+    attributes:
+      label: 希望完成判断的日期
+      placeholder: YYYY-MM-DD 或“尚未确定”
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: public-safety
+    attributes:
+      label: 公开信息确认
+      options:
+        - label: 我没有在本咨询单中提交密钥、客户原文、个人联系方式或其他敏感信息。
+          required: true
+
+        - label: 我理解评估可能给出“部分路由”或“暂缓”，不保证候选模型胜出。
+          required: true

@@ -1,0 +1,30 @@
+{
+  "schema_version": "v41flash.registry.v1",
+  "updated_at": "2026-09-10",
+  "suites": [
+    {
+      "id": "smoke",
+      "path": "benchmarks/smoke.json",
+      "version": "1.0.0",
+      "sample_count": 3,
+      "languages": ["en"],
+      "tracks": ["reasoning", "instruction", "structured-output"],
+      "provenance": "synthetic",
+      "license": "MIT",
+      "default_epochs": 1,
+      "purpose": "Endpoint and harness validation before a paid run"
+    },
+    {
+      "id": "cn-business-v1",
+      "path": "benchmarks/cn-business-v1.json",
+      "version": "1.0.0",
+      "sample_count": 12,
+      "languages": ["zh-CN"],
+      "tracks": ["reasoning", "document", "extraction", "classification", "security", "code", "agent", "instruction"],
+      "provenance": "synthetic",
+      "license": "MIT",
+      "default_epochs": 1,
+      "purpose": "Objective first-pass evidence for Chinese enterprise migrations"
+    }
+  ]
+}

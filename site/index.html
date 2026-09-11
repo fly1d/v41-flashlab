@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="V41 FlashLab：用真实业务样本评估 DeepSeek V4.1 Flash 的质量、延迟、token 用量、成本估算与迁移边界。"
+    >
+    <meta name="theme-color" content="#f3f5f1">
+    <title>V41 FlashLab｜DeepSeek V4.1 Flash 迁移体检</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='6' fill='%230d1510'/%3E%3Ctext x='32' y='39' text-anchor='middle' font-family='monospace' font-size='21' font-weight='700' fill='white'%3EDS%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+    <header class="topbar">
+      <div class="shell topbar-inner">
+        <a class="brand" href="#overview" aria-label="返回概览">
+          <span class="brand-mark" aria-hidden="true">DS</span>
+          <span>
+            <strong>V41 FlashLab</strong>
+            <small>INDEPENDENT MODEL EVAL</small>
+          </span>
+        </a>
+
+        <nav class="primary-nav" aria-label="页面导航">
+          <a href="#services">服务</a>
+          <a href="#benchmark">评测</a>
+          <a href="#evidence">证据</a>
+          <a href="#intake">需求</a>
+        </nav>
+
+        <a
+          class="model-link"
+          href="https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash"
+          target="_blank"
+          rel="noreferrer"
+        >模型页面 <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section class="hero band" id="overview" aria-labelledby="hero-title">
+        <div class="shell hero-grid">
+          <div class="hero-copy">
+            <div class="snapshot-line">
+              <span class="status-dot" aria-hidden="true"></span>
+              <span>公开页面快照</span>
+              <time datetime="2026-09-10">2026-09-10</time>
+            </div>
+
+            <h1 id="hero-title">DeepSeek<br>V4.1 Flash <small>迁移体检</small></h1>
+            <p class="hero-lede">
+              用最多 50 条脱敏业务样本，把当前模型与 V4.1-Flash 放进同一套规则，
+              材料齐备后 3 个工作日交付质量、延迟、token 用量、成本估算和迁移边界判断。
+            </p>
+
+            <div class="hero-actions">
+              <a class="button button-primary" href="#services">查看服务方案</a>
+              <a class="button button-secondary" href="#intake">生成采购需求</a>
+            </div>
+
+            <div class="evidence-legend" aria-label="证据状态图例">
+              <span><i class="legend-mark official" aria-hidden="true"></i>官方披露</span>
+              <span><i class="legend-mark pending" aria-hidden="true"></i>待独立验证</span>
+              <span><i class="legend-mark verified" aria-hidden="true"></i>独立复现</span>
+            </div>
+          </div>
+
+          <figure class="architecture-figure" aria-labelledby="architecture-title">
+            <figcaption>
+              <span>
+                <b id="architecture-title">公开配置图</b>
+                <small>结构示意，不代表性能结论</small>
+              </span>
+              <a
+                href="https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/2bc89ac599031fa673cab993f1df02fc4a98c673/config.json"
+                target="_blank"
+                rel="noreferrer"
+              >CONFIG ↗</a>
+            </figcaption>
+
+            <div class="architecture-stage">
+              <div class="input-rail" aria-label="输入模态">
+                <span>TEXT</span>
+                <span>IMAGE</span>
+              </div>
+
+              <div class="flow-line" aria-hidden="true"></div>
+
+              <div class="model-core">
+                <div class="core-label">
+                <span>552B BACKBONE</span>
+                  <strong>40 层文本主干</strong>
+                </div>
+                <div class="layer-rack" aria-label="40 层主干的抽象示意">
+                  <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                  <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                </div>
+                <div class="core-specs">
+                  <span><b>384</b> 路由专家</span>
+                  <span><b>6</b> 每 token 选用</span>
+                  <span><b>32</b> 层视觉编码器</span>
+                </div>
+              </div>
+
+              <div class="output-node">
+                <span>OUTPUT</span>
+                <strong>文本生成</strong>
+              </div>
+            </div>
+
+            <p class="architecture-note">
+              技术报告另列 196B Engram，并称激活参数约为预填充 8B / 解码 16B；质量、速度与资源占用仍需实测。
+            </p>
+          </figure>
+        </div>
+
+        <div class="shell metric-strip" aria-label="官方配置摘要">
+          <div class="metric">
+            <span class="source-tag">技术报告</span>
+            <strong>552B</strong>
+            <small>backbone · 8B prefill / 16B decode active</small>
+          </div>
+          <div class="metric">
+            <span class="source-tag">CONFIG</span>
+            <strong>1,048,576</strong>
+            <small>位置配置；参考实现默认 4K，交互模式 64K</small>
+          </div>
+          <div class="metric">
+            <span class="source-tag">CONFIG</span>
+            <strong>FP8 + FP4</strong>
+            <small>FP8 量化，专家权重 FP4</small>
+          </div>
+          <div class="metric">
+            <span class="source-tag">MODEL CARD</span>
+            <strong>MIT</strong>
+            <small>仓库许可证标记</small>
+          </div>
+        </div>
+
+        <div class="shell naming-alert" role="note">
+          <span class="alert-index">API</span>
+          <p>
+            官方 API 已上线，model id 为 <code>deepseek-flash</code>；仓库 README 标题仍写作
+            <code>DeepSeek-V4.1-Exp</code>。评测报告必须同时记录端点、model id 与权重 revision。
+          </p>
+          <a href="https://api-docs.deepseek.com/quick_start/pricing" target="_blank" rel="noreferrer">API 与价格 ↗</a>
+        </div>
+      </section>
+
+      <section class="band band-white" id="outcomes" aria-labelledby="outcomes-title">
+        <div class="shell section-heading split-heading">
+          <div>
+            <p class="kicker">BUYER OUTCOMES / 交付结果</p>
+            <h2 id="outcomes-title">交付的不是总分，而是迁移决策</h2>
+          </div>
+          <p>
+            同一模型在不同端点、参数和业务数据上会得出不同答案。评估必须落到你的工作负载。
+          </p>
+        </div>
+
+        <div class="shell opportunity-grid">
+          <article class="opportunity opportunity-now">
+            <div class="opportunity-topline">
+              <span class="opportunity-number">01</span>
+              <span class="timing-chip">DECISION</span>
+            </div>
+            <p class="opportunity-type">回答是否值得迁移</p>
+            <h3>迁移、部分路由或暂缓</h3>
+            <p>
+              按业务门槛分别判断质量、可靠性、延迟、token 用量与成本估算，不用一个综合分掩盖硬性失败。
+            </p>
+            <dl>
+              <div><dt>结论</dt><dd>按任务给出迁移建议</dd></div>
+              <div><dt>门槛</dt><dd>由业务负责人预先确认</dd></div>
+            </dl>
+          </article>
+
+          <article class="opportunity">
+            <div class="opportunity-topline">
+              <span class="opportunity-number">02</span>
+              <span class="timing-chip">EVIDENCE</span>
+            </div>
+            <p class="opportunity-type">说明为什么得出结论</p>
+            <h3>逐样本证据与失败分类</h3>
+            <p>
+              保留输入、完整输出、逐次运行、错误、评分和环境指纹，让技术团队能够复核每个判断。
+            </p>
+            <dl>
+              <div><dt>记录</dt><dd>原始 JSONL + 汇总报告</dd></div>
+              <div><dt>原则</dt><dd>超时和失败不得删除</dd></div>
+            </dl>
+          </article>
+
+          <article class="opportunity">
+            <div class="opportunity-topline">
+              <span class="opportunity-number">03</span>
+              <span class="timing-chip">ROLLOUT</span>
+            </div>
+            <p class="opportunity-type">把结论变成上线计划</p>
+            <h3>任务路由与回退计划</h3>
+            <p>
+              标出适合 V4.1-Flash 的任务、必须保留现有模型的任务，并形成试点、监控和回退条件；不代操作生产环境。
+            </p>
+            <dl>
+              <div><dt>上线</dt><dd>影子流量与小流量试点计划</dd></div>
+              <div><dt>止损</dt><dd>预先写明回退触发条件</dd></div>
+            </dl>
+          </article>
+        </div>
+
+        <div class="shell action-band">
+          <div>
+            <span class="action-label">ACCEPTANCE</span>
+            <strong>先写门槛，再跑模型。</strong>
+          </div>
+          <p>样本范围、重复次数、通过标准和不包含项都会在开始前锁定。</p>
+          <a href="#services">查看报价 <span aria-hidden="true">↓</span></a>
+        </div>
+      </section>
+
+      <section class="band service-band" id="services" aria-labelledby="services-title">
+        <div class="shell section-heading split-heading">
+          <div>
+            <p class="kicker">SERVICE MENU / 服务方案</p>
+            <h2 id="services-title">从免费复跑，到可验收的迁移试点</h2>
+          </div>
+          <p>
+            人民币首发价格用于验证市场需求。第三方 API、GPU、差旅及超出范围的定制工作另计，最终范围以书面确认单为准。
+          </p>
+        </div>
+
+        <div class="shell offer-grid">
+          <article class="offer">
+            <div class="offer-head">
+              <span>COMMUNITY</span>
+              <h3>公开评测基线</h3>
+              <p><strong>¥0</strong><small>自行运行</small></p>
+            </div>
+            <ul>
+              <li>3 条 smoke 与 12 条中文业务样本</li>
+              <li>CLI、评分器和结果 Schema</li>
+              <li>不含业务数据定制和人工结论</li>
+            </ul>
+            <a class="offer-link" href="#benchmark">查看公开方法 <span aria-hidden="true">↓</span></a>
+          </article>
+
+          <article class="offer offer-primary">
+            <div class="offer-head">
+              <span>LAUNCH OFFER · 主产品</span>
+              <h3>模型迁移体检</h3>
+              <p><strong>¥9,800</strong><small>人民币 · 一次性服务费</small></p>
+            </div>
+            <ul>
+              <li>最多 50 条脱敏业务样本</li>
+              <li>当前模型与 V4.1-Flash 两个端点</li>
+              <li>材料齐备后 3 个工作日交付</li>
+              <li>原始记录、决策报告与 60 分钟复盘</li>
+            </ul>
+            <a
+              class="button button-primary"
+              href="#intake"
+              data-service="模型迁移体检 · ¥9,800"
+            >选择迁移体检</a>
+          </article>
+
+          <article class="offer">
+            <div class="offer-head">
+              <span>ENTERPRISE</span>
+              <h3>企业迁移试点</h3>
+              <p><strong>¥39,800 起</strong><small>人民币 · 按书面范围报价</small></p>
+            </div>
+            <ul>
+              <li>最多 200 条样本与定制评分规则</li>
+              <li>质量、延迟、token 用量与治理门槛</li>
+              <li>任务路由、影子流量与回退计划</li>
+              <li>不含生产环境变更和私有化部署</li>
+            </ul>
+            <a
+              class="offer-link"
+              href="#intake"
+              data-service="企业迁移试点 · ¥39,800 起"
+            >生成试点需求 <span aria-hidden="true">↓</span></a>
+          </article>
+        </div>
+
+        <div class="shell commercial-terms" aria-label="服务边界摘要">
+          <div><span>客户提供</span><strong>脱敏样本、基线端点、API 额度与业务门槛</strong></div>
+          <div><span>验收依据</span><strong>约定样本全部留痕，报告数字可由原始记录复算</strong></div>
+          <div><span>可选续约</span><strong>持续回归监控 ¥6,800 / 月起</strong></div>
+        </div>
+
+        <div class="shell sales-contact" role="note">
+          <div>
+            <span class="action-label">FIRST 10 / 首批共创</span>
+            <strong>先用公开信息确认是否适合，不提交样本或密钥。</strong>
+            <p>咨询单会公开显示在 GitHub；只写任务类型、当前基线和决策期限，具体数据边界在私下书面确认。</p>
+          </div>
+          <a
+            class="button button-primary"
+            href="https://github.com/fly1d/v41-flashlab/issues/new?template=migration-assessment.yml"
+            target="_blank"
+            rel="noreferrer"
+          >发起评估咨询 <span aria-hidden="true">↗</span></a>
+        </div>
+      </section>
+
+      <section class="band benchmark-band" id="benchmark" aria-labelledby="benchmark-title">
+        <div class="shell section-heading split-heading">
+          <div>
+            <p class="kicker">BENCHMARK QUEUE / 评测队列</p>
+            <h2 id="benchmark-title">零分数发布，先把方法钉牢</h2>
+          </div>
+          <p>
+            目前没有独立实测结果。每一项只有在原始记录、环境指纹与评分规则齐备后，才能从“待验证”转为“已复现”。
+          </p>
+        </div>
+
+        <div class="shell benchmark-toolbar" aria-label="评测筛选">
+          <div class="segment-control" role="group" aria-label="按评测类型筛选">
+            <button type="button" data-filter="all" aria-pressed="true">全部</button>
+            <button type="button" data-filter="quality" aria-pressed="false">能力</button>
+            <button type="button" data-filter="system" aria-pressed="false">系统</button>
+            <button type="button" data-filter="agent" aria-pressed="false">Agent</button>
+          </div>
+          <span id="benchmark-count" class="benchmark-count" aria-live="polite">显示 5 / 5 项</span>
+        </div>
+
+        <div class="shell benchmark-table-wrap">
+          <table class="benchmark-table">
+            <thead>
+              <tr>
+                <th scope="col">轨道</th>
+                <th scope="col">首轮任务</th>
+                <th scope="col">必须记录</th>
+                <th scope="col">状态</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-category="quality">
+                <td data-label="轨道"><b>真实代码库</b><span>QUALITY / CODE</span></td>
+                <td data-label="首轮任务">缺陷定位、最小补丁、回归测试</td>
+                <td data-label="必须记录">patch、测试日志、轮次、token</td>
+                <td data-label="状态"><span class="state state-pending">待验证</span></td>
+              </tr>
+              <tr data-category="quality">
+                <td data-label="轨道"><b>长上下文</b><span>QUALITY / CONTEXT</span></td>
+                <td data-label="首轮任务">32K / 128K / 256K / 1M 召回与推理</td>
+                <td data-label="必须记录">有效长度、准确率、首 token 延迟</td>
+                <td data-label="状态"><span class="state state-pending">待验证</span></td>
+              </tr>
+              <tr data-category="quality">
+                <td data-label="轨道"><b>视觉理解</b><span>QUALITY / VISION</span></td>
+                <td data-label="首轮任务">中文截图、表格、多图关系</td>
+                <td data-label="必须记录">原图、缩放策略、逐项判断</td>
+                <td data-label="状态"><span class="state state-pending">待验证</span></td>
+              </tr>
+              <tr data-category="agent">
+                <td data-label="轨道"><b>工具意图</b><span>AGENT / INTENT</span></td>
+                <td data-label="首轮任务">JSON 约束、只读边界、动作选择</td>
+                <td data-label="必须记录">schema、原始输出与违规率</td>
+                <td data-label="状态"><span class="state state-pending">待验证</span></td>
+              </tr>
+              <tr data-category="system">
+                <td data-label="轨道"><b>推理系统</b><span>SYSTEM / SERVING</span></td>
+                <td data-label="首轮任务">启动、并发、长序列稳定性</td>
+                <td data-label="必须记录">硬件、版本、显存、TTFT、TPS</td>
+                <td data-label="状态"><span class="state state-pending">待部署</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="shell completion-rule">
+          <span>状态门槛</span>
+          <p><b>待验证</b> → 方法与样本公开 → 两次一致运行 → <b>已复现</b></p>
+          <strong>0 / 5 已完成</strong>
+        </div>
+      </section>
+
+      <section class="band band-white" id="evidence" aria-labelledby="evidence-title">
+        <div class="shell section-heading split-heading">
+          <div>
+            <p class="kicker">EVIDENCE LEDGER / 证据账本</p>
+            <h2 id="evidence-title">把“官方写了”与“我们测过”分开</h2>
+          </div>
+          <p>
+            下表只记录可定位的公开字段。官方配置证明模型如何被描述，不自动证明它在目标业务中的表现。
+          </p>
+        </div>
+
+        <div class="shell principles" aria-label="复现原则">
+          <article>
+            <span>01</span>
+            <h3>原始记录</h3>
+            <p>保留输入、完整输出、逐次运行、错误与评分明细。</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>环境锁定</h3>
+            <p>固定提交版本、推理参数、依赖、硬件与随机种子。</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>基线同场</h3>
+            <p>同一数据、预算和判定规则下比较现有模型。</p>
+          </article>
+          <article>
+            <span>04</span>
+            <h3>失败可见</h3>
+            <p>公开超时、格式违规、拒答和不可复现的样例。</p>
+          </article>
+        </div>
+
+        <section class="shell method-reference" aria-labelledby="method-reference-title">
+          <div class="method-reference-head">
+            <div>
+              <p class="kicker">METHOD LINEAGE / 方法参照</p>
+              <h3 id="method-reference-title">采用成熟评测的可审计规则</h3>
+            </div>
+            <p>借鉴协议，不搬运第三方题目；名称仅表示方法参考，不代表背书。</p>
+          </div>
+          <div class="benchmark-table-wrap">
+            <table class="benchmark-table method-table">
+              <thead>
+                <tr>
+                  <th scope="col">参考项目</th>
+                  <th scope="col">成熟做法</th>
+                  <th scope="col">本站落实</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td data-label="参考项目"><b><a href="https://inspect.aisi.org.uk/" target="_blank" rel="noreferrer">Inspect AI ↗</a></b><span>SAMPLE LOGS</span></td>
+                  <td data-label="成熟做法">数据、求解器与评分器分离，保留逐样本日志</td>
+                  <td data-label="本站落实">Suite / client / scorer 分层；每次 attempt 单独写入 JSONL</td>
+                </tr>
+                <tr>
+                  <td data-label="参考项目"><b><a href="https://github.com/EleutherAI/lm-evaluation-harness" target="_blank" rel="noreferrer">lm-eval ↗</a></b><span>DECLARATIVE TASKS</span></td>
+                  <td data-label="成熟做法">声明式任务、任务发现与模型适配层</td>
+                  <td data-label="本站落实">版本化 JSON / YAML suite、任务列表与 OpenAI-compatible client</td>
+                </tr>
+                <tr>
+                  <td data-label="参考项目"><b><a href="https://github.com/stanford-crfm/helm" target="_blank" rel="noreferrer">HELM ↗</a></b><span>MULTI-METRIC</span></td>
+                  <td data-label="成熟做法">质量、效率与风险分别报告，可下钻样本</td>
+                  <td data-label="本站落实">准确率、错误率、延迟、TTFT 与 token 分维度呈现</td>
+                </tr>
+                <tr>
+                  <td data-label="参考项目"><b><a href="https://github.com/LiveBench/LiveBench" target="_blank" rel="noreferrer">LiveBench ↗</a></b><span>FRESHNESS</span></td>
+                  <td data-label="成熟做法">客观评分、版本发布与污染意识</td>
+                  <td data-label="本站落实">首发合成样本、确定性 grader、suite SHA 与证据状态</td>
+                </tr>
+                <tr>
+                  <td data-label="参考项目"><b><a href="https://github.com/THUDM/LongBench" target="_blank" rel="noreferrer">LongBench ↗</a></b><span>CONTEXT BANDS</span></td>
+                  <td data-label="成熟做法">按长度分桶，区分检索与跨段推理</td>
+                  <td data-label="本站落实">32K 至 1M 渐进档位、seeded 多位置事实组合</td>
+                </tr>
+                <tr>
+                  <td data-label="参考项目"><b><a href="https://github.com/princeton-nlp/SWE-bench" target="_blank" rel="noreferrer">SWE-bench ↗</a></b><span>EXECUTABLE TASKS</span></td>
+                  <td data-label="成熟做法">真实仓库任务、可执行验证与隔离环境</td>
+                  <td data-label="本站落实">路线图；当前代码样本仅为 smoke，不宣称仓库级能力</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <div class="shell ledger-wrap">
+          <div class="ledger-header">
+            <h3>上线日事实快照</h3>
+            <span>SNAPSHOT · 2026-09-10</span>
+          </div>
+          <div class="ledger-list">
+            <article class="ledger-row">
+              <div><span>官方规模口径</span><strong>552B backbone</strong></div>
+              <p>技术报告另列 196B Engram；激活参数口径为预填充约 8B、解码约 16B。</p>
+              <span class="state state-official">官方报告</span>
+              <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/2bc89ac599031fa673cab993f1df02fc4a98c673/DeepSeek_V41_Tech_Report.pdf" target="_blank" rel="noreferrer">来源 ↗</a>
+            </article>
+            <article class="ledger-row">
+              <div><span>Checkpoint 文件审计</span><strong>≈763.2B logical weights</strong></div>
+              <p>按官方转换代码还原 FP4 双元素并排除 scale 后的近似值，含 backbone、Engram 与 DSpark；HF API 的 484.6B 不能直接当参数量。</p>
+              <span class="state state-verified">独立文件审计</span>
+              <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/2bc89ac599031fa673cab993f1df02fc4a98c673/inference/convert.py" target="_blank" rel="noreferrer">方法 ↗</a>
+            </article>
+            <article class="ledger-row">
+              <div><span>量化</span><strong>FP8 / expert FP4</strong></div>
+              <p><code>quant_method: fp8</code>，专家权重字段为 <code>fp4</code>。</p>
+              <span class="state state-official">官方配置</span>
+              <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/2bc89ac599031fa673cab993f1df02fc4a98c673/config.json" target="_blank" rel="noreferrer">来源 ↗</a>
+            </article>
+            <article class="ledger-row">
+              <div><span>稀疏专家</span><strong>384 routed / top 6</strong></div>
+              <p>配置列出 384 个路由专家，每 token 选择 6 个。</p>
+              <span class="state state-official">官方配置</span>
+              <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/2bc89ac599031fa673cab993f1df02fc4a98c673/config.json" target="_blank" rel="noreferrer">来源 ↗</a>
+            </article>
+            <article class="ledger-row">
+              <div><span>上下文配置</span><strong>1,048,576 positions</strong></div>
+              <p>配置字段为 1M；参考实现默认 <code>max_seq_len=4096</code>，交互模式覆盖为 64K，并非开箱即用 1M。</p>
+              <span class="state state-pending">待独立验证</span>
+              <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/2bc89ac599031fa673cab993f1df02fc4a98c673/inference/generate.py" target="_blank" rel="noreferrer">来源 ↗</a>
+            </article>
+            <article class="ledger-row">
+              <div><span>Tokenizer 一致性</span><strong>pad token 待核对</strong></div>
+              <p><code>tokenizer_config</code> 将 pad 声明为 EOS，而模型配置和词表使用 id 2；接入框架时需显式检查。</p>
+              <span class="state state-risk">集成风险</span>
+              <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/2bc89ac599031fa673cab993f1df02fc4a98c673/tokenizer_config.json" target="_blank" rel="noreferrer">来源 ↗</a>
+            </article>
+            <article class="ledger-row">
+              <div><span>多模态</span><strong>Vision encoder</strong></div>
+              <p>配置含 32 层视觉编码器；README 称最小推理覆盖视觉编码与对齐。</p>
+              <span class="state state-official">官方配置</span>
+              <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/2bc89ac599031fa673cab993f1df02fc4a98c673/README.md" target="_blank" rel="noreferrer">来源 ↗</a>
+            </article>
+            <article class="ledger-row">
+              <div><span>官方托管 API</span><strong>deepseek-flash</strong></div>
+              <p>1M context；峰时每百万 token 缓存命中 $0.006、未命中输入 $0.30、输出 $1.20，闲时价格减半。</p>
+              <span class="state state-official">官方文档</span>
+              <a href="https://api-docs.deepseek.com/quick_start/pricing" target="_blank" rel="noreferrer">价格 ↗</a>
+            </article>
+            <article class="ledger-row ledger-empty">
+              <div><span>质量 / 速度 / 成本估算</span><strong>尚无本站结论</strong></div>
+              <p>等待按上方队列运行；不以配置字段代替业务评测。</p>
+              <span class="state state-pending">未测试</span>
+              <a href="#benchmark">查看队列 ↓</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="band intake-band" id="intake" aria-labelledby="intake-title">
+        <div class="shell intake-layout">
+          <div class="intake-intro">
+            <p class="kicker">MIGRATION INTAKE / 迁移评估</p>
+            <h2 id="intake-title">生成一份可确认范围的采购简报</h2>
+            <p class="intake-lede">
+              用当前业务约束定义服务范围和对照实验。页面只在本地处理输入，不会发送、保存或上传任何内容。
+            </p>
+
+            <div class="privacy-note" role="note">
+              <span aria-hidden="true">LOCAL</span>
+              <p><b>仅本地生成</b><br>请勿填写密钥、客户原文或其他敏感数据。</p>
+            </div>
+
+            <ol class="intake-steps">
+              <li><span>1</span>选择服务方案与真实场景</li>
+              <li><span>2</span>锁定基线、范围与决策门槛</li>
+              <li><span>3</span>复制简报，进入书面商务确认</li>
+            </ol>
+          </div>
+
+          <div class="intake-panel">
+            <form id="migration-form" novalidate>
+              <div class="field field-wide">
+                <label for="service">服务方案</label>
+                <select id="service" name="service" required>
+                  <option value="">请选择</option>
+                  <option>模型迁移体检 · ¥9,800</option>
+                  <option>企业迁移试点 · ¥39,800 起</option>
+                  <option>持续回归监控 · ¥6,800 / 月起</option>
+                  <option>只使用公开评测基线</option>
+                </select>
+              </div>
+
+              <div class="form-grid">
+                <div class="field">
+                  <label for="project">项目代号 <span>可选</span></label>
+                  <input id="project" name="project" type="text" maxlength="60" placeholder="例如：客服知识库升级">
+                </div>
+
+                <div class="field">
+                  <label for="baseline">当前基线模型</label>
+                  <select id="baseline" name="baseline" required>
+                    <option value="">请选择</option>
+                    <option>尚未使用模型</option>
+                    <option>DeepSeek 既有模型</option>
+                    <option>OpenAI 模型</option>
+                    <option>Claude</option>
+                    <option>Qwen</option>
+                    <option>Llama / 自托管开源模型</option>
+                    <option>其他 / 多模型路由</option>
+                  </select>
+                </div>
+              </div>
+
+              <fieldset id="usecase-fieldset" aria-describedby="usecase-error" aria-invalid="false">
+                <legend>优先验证场景 <span>至少选择一项</span></legend>
+                <div class="choice-grid choice-grid-usecase">
+                  <label><input type="checkbox" name="usecase" value="代码与仓库任务"><span>代码与仓库</span></label>
+                  <label><input type="checkbox" name="usecase" value="长文档与检索"><span>长文档与检索</span></label>
+                  <label><input type="checkbox" name="usecase" value="图像、截图与表格"><span>图像 / 截图</span></label>
+                  <label><input type="checkbox" name="usecase" value="工具调用与 Agent"><span>工具 / Agent</span></label>
+                  <label><input type="checkbox" name="usecase" value="通用对话与写作"><span>对话与写作</span></label>
+                  <label><input type="checkbox" name="usecase" value="结构化抽取"><span>结构化抽取</span></label>
+                </div>
+                <p class="field-error" id="usecase-error" aria-live="polite"></p>
+              </fieldset>
+
+              <div class="form-grid">
+                <div class="field">
+                  <label for="volume">每日请求量</label>
+                  <select id="volume" name="volume" required>
+                    <option value="">请选择</option>
+                    <option>少于 1,000</option>
+                    <option>1,000—10,000</option>
+                    <option>10,000—100,000</option>
+                    <option>超过 100,000</option>
+                    <option>尚不确定</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="context">典型输入长度</label>
+                  <select id="context" name="context" required>
+                    <option value="">请选择</option>
+                    <option>少于 8K tokens</option>
+                    <option>8K—32K tokens</option>
+                    <option>32K—128K tokens</option>
+                    <option>128K tokens 以上</option>
+                    <option>输入长度波动较大</option>
+                  </select>
+                </div>
+              </div>
+
+              <fieldset>
+                <legend>部署约束</legend>
+                <div class="choice-grid choice-grid-radio">
+                  <label><input type="radio" name="deployment" value="可使用托管 API" required><span>托管 API</span></label>
+                  <label><input type="radio" name="deployment" value="需私有云部署"><span>私有云</span></label>
+                  <label><input type="radio" name="deployment" value="需完全本地部署"><span>完全本地</span></label>
+                  <label><input type="radio" name="deployment" value="尚未确定"><span>待确定</span></label>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>决策指标 <span>可多选</span></legend>
+                <div class="choice-grid choice-grid-metric">
+                  <label><input type="checkbox" name="metric" value="任务质量"><span>质量</span></label>
+                  <label><input type="checkbox" name="metric" value="端到端延迟"><span>延迟</span></label>
+                  <label><input type="checkbox" name="metric" value="token 用量与单位任务成本估算"><span>成本估算</span></label>
+                  <label><input type="checkbox" name="metric" value="数据与部署治理"><span>治理</span></label>
+                  <label><input type="checkbox" name="metric" value="长任务稳定性"><span>稳定性</span></label>
+                </div>
+              </fieldset>
+
+              <div class="field">
+                <label for="pain">当前最大问题 <span>可选，请勿粘贴业务原文</span></label>
+                <textarea
+                  id="pain"
+                  name="pain"
+                  rows="3"
+                  maxlength="240"
+                  placeholder="例如：128K 文档问答准确率下降；高峰期首 token 延迟超过目标"
+                ></textarea>
+                <span class="character-count"><span id="pain-count">0</span> / 240</span>
+              </div>
+
+              <div class="form-actions">
+                <button class="button button-primary" type="submit">生成采购简报</button>
+                <button class="text-button" type="reset">清空</button>
+              </div>
+            </form>
+
+            <noscript>
+              <p class="noscript-note">需要启用 JavaScript 才能在本地生成简报。</p>
+            </noscript>
+
+            <section class="brief-result" id="brief-result" aria-labelledby="brief-title" hidden>
+              <div class="brief-header">
+                <div>
+                  <span>LOCAL OUTPUT</span>
+                  <h3 id="brief-title">采购与迁移评估简报</h3>
+                </div>
+                <div class="brief-actions">
+                  <button class="button button-secondary button-compact" id="copy-brief" type="button">复制简报</button>
+                  <a
+                    class="button button-primary button-compact"
+                    href="https://github.com/fly1d/v41-flashlab/issues/new?template=migration-assessment.yml"
+                    target="_blank"
+                    rel="noreferrer"
+                  >发起公开咨询 <span aria-hidden="true">↗</span></a>
+                </div>
+              </div>
+              <pre id="brief-output" tabindex="0"></pre>
+              <p class="copy-status" id="copy-status" role="status" aria-live="polite"></p>
+            </section>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <div>
+          <strong>V41 FlashLab · Independent Model Evaluation</strong>
+          <p>按真实业务门槛做迁移判断，不出售榜单名次。</p>
+        </div>
+        <div class="footer-links">
+          <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash" target="_blank" rel="noreferrer">模型页 ↗</a>
+          <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/tree/2bc89ac599031fa673cab993f1df02fc4a98c673" target="_blank" rel="noreferrer">固定文件列表 ↗</a>
+          <a href="#overview">回到顶部 ↑</a>
+        </div>
+        <small>快照日期 2026-09-10 · 页面数据不构成性能或采购承诺 · © <span id="current-year">2026</span></small>
+      </div>
+    </footer>
+  </body>
+</html>
