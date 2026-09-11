@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fly1d.github.io/v41-flashlab/sitemap.xml

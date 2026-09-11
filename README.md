@@ -1,5 +1,11 @@
 # V41 FlashLab
 
+[![CI](https://github.com/fly1d/v41-flashlab/actions/workflows/ci.yml/badge.svg)](https://github.com/fly1d/v41-flashlab/actions/workflows/ci.yml)
+[![Pages](https://github.com/fly1d/v41-flashlab/actions/workflows/pages.yml/badge.svg)](https://fly1d.github.io/v41-flashlab/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-087a50.svg)](LICENSE)
+
+**Live migration service:** <https://fly1d.github.io/v41-flashlab/>
+
 An independent, reproducible field lab for **DeepSeek-V4.1-Flash**. It turns
 OpenAI-compatible endpoints into auditable evaluation runs, comparable result
 artifacts, and a static report that can be published without a backend.
@@ -17,6 +23,7 @@ artifacts, and a static report that can be published without a backend.
 - A no-build launch dashboard and local-only migration brief generator.
 - A launch-day technical brief and a practical enterprise migration worksheet.
 - A customer-facing service menu, scope confirmation template, and sales playbook.
+- A public-safe GitHub intake path plus searchable and shareable site metadata.
 
 ## Commercial delivery kit
 
