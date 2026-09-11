@@ -112,6 +112,10 @@ runs/                Local run artifacts (ignored except examples)
 
 ## Suggested first public experiment
 
+The evidence gate and public checklist are tracked in
+[`docs/first-public-run.md`](docs/first-public-run.md) and
+[issue #1](https://github.com/fly1d/v41-flashlab/issues/1).
+
 Run the 12-case Chinese business suite against V4.1-Flash and one production
 model after the 3-case smoke check, then publish both raw artifacts. The first
 useful answer is not "which model is best?" but "on which workload, at what

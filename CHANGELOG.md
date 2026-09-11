@@ -18,6 +18,8 @@ here. Dates use ISO 8601.
   submissions, and sanitized bug reports.
 - Self-reported source attribution on commercial inquiries so channel quality
   can be measured without adding third-party tracking scripts.
+- A public evidence checklist for the first reproducible V4.1 Flash endpoint
+  comparison.
 - A 1200 x 630 social preview image, canonical metadata, robots policy, and
   sitemap for public discovery.
 
