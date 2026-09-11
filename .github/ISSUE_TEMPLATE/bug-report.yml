@@ -1,0 +1,62 @@
+name: 报告缺陷
+description: 报告 CLI、评分、报告或静态页面中可复现的问题
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请使用最小、脱敏的复现信息。不要粘贴 API 密钥、客户样本、内部 URL、个人信息或完整 `.env`。
+
+  - type: input
+    id: version
+    attributes:
+      label: FlashLab 版本或 commit
+      placeholder: 例如：v0.1.0 / 991f8de
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: 问题区域
+      options:
+        - CLI / 请求客户端
+        - Suite / Registry
+        - 评分器
+        - 报告 / 对比
+        - 静态页面
+        - 文档
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 最小复现步骤
+      description: 使用占位端点和合成输入；可包含已脱敏的命令与错误摘要。
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期结果与实际结果
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: 运行环境
+      placeholder: OS、Python、安装方式；不要包含主机名或账户信息
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: 数据检查
+      options:
+        - label: 我确认本 Issue 和附件不含密钥、客户数据或其他非公开信息。
+          required: true

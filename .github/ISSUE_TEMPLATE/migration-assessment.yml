@@ -1,6 +1,8 @@
 name: 模型迁移体检咨询
 description: 用公开、非敏感信息确认是否适合开展 V4.1-Flash 迁移评估
 title: "[迁移体检] "
+labels: ["sales-intake"]
+assignees: ["fly1d"]
 body:
   - type: markdown
     attributes:

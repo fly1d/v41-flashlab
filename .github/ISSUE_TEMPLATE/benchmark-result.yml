@@ -1,0 +1,72 @@
+name: 提交可复现评测结果
+description: 提交已脱敏、可公开复算的 V41 FlashLab 运行产物
+title: "[评测结果] "
+labels: ["benchmark-result"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        只接受可公开、已脱敏的材料。请先删除密钥、客户输入、内部主机名、个人信息和其他非公开元数据；没有原始运行产物的分数不会进入公开结果。
+
+  - type: dropdown
+    id: suite
+    attributes:
+      label: 评测 Suite
+      options:
+        - smoke
+        - cn-business-v1
+        - 自定义 Suite（请在下方说明来源和许可）
+    validations:
+      required: true
+
+  - type: input
+    id: model
+    attributes:
+      label: Provider、端点区域与模型 ID
+      placeholder: 例如：DeepSeek API / region / deepseek-flash
+    validations:
+      required: true
+
+  - type: input
+    id: revision
+    attributes:
+      label: 模型 revision 与 FlashLab commit
+      placeholder: 权重 revision / FlashLab Git commit
+    validations:
+      required: true
+
+  - type: input
+    id: artifact
+    attributes:
+      label: 已脱敏的公开原始产物 URL
+      description: 链接必须允许审核者访问逐样本 JSONL；不要上传包含私有输入的文件。
+      placeholder: https://...
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: 运行环境与参数
+      description: 说明端点、日期、硬件（如适用）、并发、采样参数、repeat 和任何偏离默认值的设置。
+    validations:
+      required: true
+
+  - type: textarea
+    id: provenance
+    attributes:
+      label: 自定义数据来源与许可
+      description: 使用仓库内置 Suite 时填写“不适用”；自定义数据必须说明来源、授权和污染风险。
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: attestations
+    attributes:
+      label: 发布确认
+      options:
+        - label: 我已检查公开产物，不含密钥、客户原文、个人信息或其他非公开数据。
+          required: true
+        - label: 我有权公开这些输入、输出和运行元数据，并接受维护者复算或拒绝不可核对的结论。
+          required: true
+

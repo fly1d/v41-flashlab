@@ -14,6 +14,8 @@ here. Dates use ISO 8601.
 - Draft standard service terms and a conditional data-processing addendum for
   legal, tax, and compliance review before first contracting.
 - A public-safe GitHub inquiry form and GitHub Pages deployment workflow.
+- Structured issue forms for commercial inquiries, reproducible result
+  submissions, and sanitized bug reports.
 - A 1200 x 630 social preview image, canonical metadata, robots policy, and
   sitemap for public discovery.
 
